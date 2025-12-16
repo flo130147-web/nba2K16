@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA 2K16 - Comparateur d'Attributs</title>
+    <title>NBA 2K16 - Comparateur 3 Joueurs</title>
     <style>
         :root {
             --bg-color: #1a1a1a;
             --card-bg: #2d2d2d;
             --text-color: #e0e0e0;
-            --accent: #f39c12; /* Orange Basket */
+            --accent: #f39c12; /* Orange */
             --secondary: #3498db; /* Bleu */
             --header-bg: #121212;
+            --border-color: #444;
         }
 
         body {
@@ -29,107 +30,134 @@
         header {
             background-color: var(--header-bg);
             width: 100%;
-            padding: 20px 0;
+            padding: 15px 0;
             text-align: center;
             border-bottom: 3px solid var(--accent);
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
         }
 
-        h1 { margin: 0; font-size: 2rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
-        p.subtitle { margin: 5px 0 0; color: #888; font-size: 0.9rem; }
+        h1 { margin: 0; font-size: 1.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
 
         .container {
-            width: 90%;
-            max-width: 1200px;
-            margin-top: 30px;
+            width: 95%;
+            max-width: 1400px;
             padding-bottom: 50px;
         }
 
-        /* Controls Section */
-        .controls {
+        /* --- SELECTORS AREA (3 Columns) --- */
+        .selectors-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .player-slot {
             background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            position: relative;
         }
 
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            min-width: 200px;
+        .player-slot h3 {
+            margin-top: 0;
+            color: var(--secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            text-align: center;
         }
 
-        label { margin-bottom: 8px; font-weight: bold; color: var(--secondary); }
+        .control-group { margin-bottom: 10px; }
+        
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #aaa; }
 
         select {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #333;
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: #222;
             color: white;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        select:focus { border-color: var(--accent); }
-
-        /* Stats Grid */
-        #stats-container {
-            margin-top: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        #stats-container.visible { opacity: 1; }
-
-        .stat-category {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            border-top: 4px solid var(--secondary);
-        }
-
-        .category-title {
-            background-color: rgba(0,0,0,0.2);
-            padding: 10px 15px;
-            font-weight: bold;
-            color: var(--accent);
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 15px;
-            border-bottom: 1px solid #3d3d3d;
             font-size: 0.95rem;
         }
 
-        .stat-row:last-child { border-bottom: none; }
-        
-        .stat-val { font-weight: bold; }
-        .stat-val.high { color: #2ecc71; } /* Green for high stats */
-        .stat-val.med { color: #f1c40f; }  /* Yellow for mid */
-        .stat-val.low { color: #e74c3c; }  /* Red for low */
+        /* --- COMPARISON TABLE --- */
+        .table-wrapper {
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
 
-        .empty-state {
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 10px 15px;
             text-align: center;
-            margin-top: 50px;
-            color: #666;
-            font-size: 1.2rem;
-            font-style: italic;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        th:last-child, td:last-child { border-right: none; }
+
+        /* Table Headers */
+        thead th {
+            background-color: #222;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Category Header (e.g. Shooting) */
+        .category-row th {
+            background-color: #3a3a3a;
+            color: var(--accent);
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding-top: 20px;
+            padding-bottom: 5px;
+        }
+
+        /* Attribute Name Column */
+        td.attr-name {
+            text-align: left;
+            font-weight: bold;
+            color: #ccc;
+            background-color: #2a2a2a;
+            width: 200px;
+        }
+
+        /* Player Columns */
+        th.player-header {
+            width: 20%;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Values coloring */
+        .val-high { color: #2ecc71; font-weight: bold; }
+        .val-med { color: #f1c40f; }
+        .val-low { color: #e74c3c; }
+        .val-empty { color: #555; }
+
+        /* Highlight best value in row */
+        .winner {
+            background-color: rgba(46, 204, 113, 0.1); /* Light green bg */
+            border: 1px solid #2ecc71;
+        }
+
+        @media (max-width: 768px) {
+            .selectors-container { grid-template-columns: 1fr; }
+            th.player-header { font-size: 0.9rem; }
+            .container { width: 100%; }
         }
 
     </style>
@@ -137,42 +165,81 @@
 <body>
 
 <header>
-    <h1>NBA 2K16 Builder</h1>
-    <p class="subtitle">Base de données d'attributs par Archétype</p>
+    <h1>NBA 2K16 - Comparateur 3 Builds</h1>
 </header>
 
 <div class="container">
-    <div class="controls">
-        <div class="control-group">
-            <label for="pos-select">Poste (Position)</label>
-            <select id="pos-select">
-                <option value="">-- Choisir un poste --</option>
-            </select>
+    
+    <div class="selectors-container">
+        <div class="player-slot" id="slot-1">
+            <h3>Joueur 1</h3>
+            <div class="control-group">
+                <label>Poste</label>
+                <select onchange="updateArchetypes(1)" id="pos-1"><option value="">-- Choisir --</option></select>
+            </div>
+            <div class="control-group">
+                <label>Archétype</label>
+                <select onchange="updateHeights(1)" id="arch-1" disabled><option value="">-- --</option></select>
+            </div>
+            <div class="control-group">
+                <label>Taille</label>
+                <select onchange="renderTable()" id="height-1" disabled><option value="">-- --</option></select>
+            </div>
         </div>
 
-        <div class="control-group">
-            <label for="arch-select">Archétype</label>
-            <select id="arch-select" disabled>
-                <option value="">-- D'abord le poste --</option>
-            </select>
+        <div class="player-slot" id="slot-2">
+            <h3>Joueur 2</h3>
+            <div class="control-group">
+                <label>Poste</label>
+                <select onchange="updateArchetypes(2)" id="pos-2"><option value="">-- Choisir --</option></select>
+            </div>
+            <div class="control-group">
+                <label>Archétype</label>
+                <select onchange="updateHeights(2)" id="arch-2" disabled><option value="">-- --</option></select>
+            </div>
+            <div class="control-group">
+                <label>Taille</label>
+                <select onchange="renderTable()" id="height-2" disabled><option value="">-- --</option></select>
+            </div>
         </div>
 
-        <div class="control-group">
-            <label for="height-select">Taille (Height)</label>
-            <select id="height-select" disabled>
-                <option value="">-- Choisir la taille --</option>
-            </select>
+        <div class="player-slot" id="slot-3">
+            <h3>Joueur 3</h3>
+            <div class="control-group">
+                <label>Poste</label>
+                <select onchange="updateArchetypes(3)" id="pos-3"><option value="">-- Choisir --</option></select>
+            </div>
+            <div class="control-group">
+                <label>Archétype</label>
+                <select onchange="updateHeights(3)" id="arch-3" disabled><option value="">-- --</option></select>
+            </div>
+            <div class="control-group">
+                <label>Taille</label>
+                <select onchange="renderTable()" id="height-3" disabled><option value="">-- --</option></select>
+            </div>
         </div>
     </div>
 
-    <div id="result-area">
-        <div class="empty-state">Sélectionnez les options ci-dessus pour voir les stats.</div>
+    <div class="table-wrapper">
+        <table id="comparison-table">
+            <thead>
+                <tr>
+                    <th>Attributs</th>
+                    <th class="player-header" id="h-p1">Joueur 1</th>
+                    <th class="player-header" id="h-p2">Joueur 2</th>
+                    <th class="player-header" id="h-p3">Joueur 3</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr><td colspan="4" style="padding: 30px; color: #666;">Sélectionnez au moins un joueur pour comparer.</td></tr>
+            </tbody>
+        </table>
     </div>
+
 </div>
 
 <script>
-    // --- 1. DATA PROCESSING ---
-    // Je mets ici toutes les données brutes du CSV pour que le site fonctionne sans serveur
+    // --- DATA ---
     const rawCsvData = `Pos.,Archetype,Height,Moving Shot Close,Standing Shot Close,Moving Shot Mid-Range,Standing Shot Mid-Range,Moving Shot Three,Standing Shot Three,Free Throw,Standing Layup,Driving Layup,Post Fadeaway,Post Hook,Post Control,Standing Dunk,Driving Dunk,Contact Dunk,Speed,Accel,Vertical,Strength,Stamina,Hustle,Ball Control,Passing Vision,Passing IQ,Passing Accuracy,Boxout,Offensive Rebound,Defensive Rebound,Lateral Quickness,Pass Perception,Block,Shot Contest,Steal,Defensive Consistency,On-Ball Defensive IQ,Pick and Roll Defensive IQ,Help Defensive IQ
 PG,Balanced,5'7",80,80,86,86,84,84,90,85,85,60,40,50,25,80,80,94,94,94,65,94,94,94,94,94,94,65,65,65,94,94,50,94,94,94,94,94,94
 PG,Balanced,5'8",80,80,86,86,84,84,90,85,85,61,41,52,29,80,80,93,93,94,67,94,94,93,94,94,94,66,66,66,93,94,52,94,93,94,94,94,94
@@ -319,7 +386,6 @@ C,Inside,7'1",94,94,61,61,56,56,85,90,71,90,90,94,94,94,94,59,59,61,94,94,94,54,
 C,Inside,7'2",94,94,61,61,56,56,85,90,71,90,90,94,94,94,94,57,57,58,94,94,94,52,75,75,75,94,94,94,57,94,94,94,71,94,90,94,94
 C,Inside,7'3",94,94,60,60,55,55,85,90,70,90,90,94,94,94,94,55,55,55,94,94,94,50,75,75,75,94,94,94,55,94,94,94,70,94,90,94,94`;
 
-    // Grouping structure based on the CSV Columns
     const structure = {
         "Shooting": ["Moving Shot Close", "Standing Shot Close", "Moving Shot Mid-Range", "Standing Shot Mid-Range", "Moving Shot Three", "Standing Shot Three", "Free Throw"],
         "Inside Scoring": ["Standing Layup", "Driving Layup", "Post Fadeaway", "Post Hook", "Post Control", "Standing Dunk", "Driving Dunk", "Contact Dunk"],
@@ -331,7 +397,8 @@ C,Inside,7'3",94,94,60,60,55,55,85,90,70,90,90,94,94,94,94,55,55,55,94,94,94,50,
 
     let playersData = [];
 
-    // Parse CSV
+    // --- LOGIC ---
+
     function parseCSV() {
         const rows = rawCsvData.trim().split('\n');
         const headers = rows[0].split(',');
@@ -354,127 +421,148 @@ C,Inside,7'3",94,94,60,60,55,55,85,90,70,90,90,94,94,94,94,55,55,55,94,94,94,50,
         }
     }
 
-    // --- 2. UI LOGIC ---
-
-    const posSelect = document.getElementById('pos-select');
-    const archSelect = document.getElementById('arch-select');
-    const heightSelect = document.getElementById('height-select');
-    const resultArea = document.getElementById('result-area');
-
-    function populateFilters() {
+    // Initialize Selectors
+    function initSelectors() {
         parseCSV();
-        
-        // Get unique Positions
         const positions = [...new Set(playersData.map(p => p.pos))];
-        positions.forEach(pos => {
-            const opt = document.createElement('option');
-            opt.value = pos;
-            opt.textContent = pos;
-            posSelect.appendChild(opt);
-        });
+        
+        for(let i=1; i<=3; i++) {
+            const sel = document.getElementById(`pos-${i}`);
+            positions.forEach(pos => {
+                const opt = document.createElement('option');
+                opt.value = pos;
+                opt.textContent = pos;
+                sel.appendChild(opt);
+            });
+        }
     }
 
-    function updateArchetypes() {
-        const selectedPos = posSelect.value;
-        archSelect.innerHTML = '<option value="">-- Choisir un archétype --</option>';
-        heightSelect.innerHTML = '<option value="">-- Choisir la taille --</option>';
-        heightSelect.disabled = true;
-        resultArea.innerHTML = '<div class="empty-state">Sélectionnez les options ci-dessus...</div>';
+    function updateArchetypes(slotId) {
+        const posSel = document.getElementById(`pos-${slotId}`);
+        const archSel = document.getElementById(`arch-${slotId}`);
+        const heightSel = document.getElementById(`height-${slotId}`);
+        
+        archSel.innerHTML = '<option value="">-- --</option>';
+        heightSel.innerHTML = '<option value="">-- --</option>';
+        heightSel.disabled = true;
 
-        if (!selectedPos) {
-            archSelect.disabled = true;
+        if (!posSel.value) {
+            archSel.disabled = true;
+            renderTable();
             return;
         }
 
-        const archetypes = [...new Set(playersData.filter(p => p.pos === selectedPos).map(p => p.archetype))];
+        const archetypes = [...new Set(playersData.filter(p => p.pos === posSel.value).map(p => p.archetype))];
         archetypes.forEach(arch => {
             const opt = document.createElement('option');
             opt.value = arch;
             opt.textContent = arch;
-            archSelect.appendChild(opt);
+            archSel.appendChild(opt);
         });
-        archSelect.disabled = false;
+        archSel.disabled = false;
+        renderTable();
     }
 
-    function updateHeights() {
-        const selectedPos = posSelect.value;
-        const selectedArch = archSelect.value;
-        heightSelect.innerHTML = '<option value="">-- Choisir la taille --</option>';
-        resultArea.innerHTML = '<div class="empty-state">Sélectionnez la taille...</div>';
+    function updateHeights(slotId) {
+        const posSel = document.getElementById(`pos-${slotId}`);
+        const archSel = document.getElementById(`arch-${slotId}`);
+        const heightSel = document.getElementById(`height-${slotId}`);
 
-        if (!selectedArch) {
-            heightSelect.disabled = true;
+        heightSel.innerHTML = '<option value="">-- --</option>';
+
+        if (!archSel.value) {
+            heightSel.disabled = true;
+            renderTable();
             return;
         }
 
         const heights = [...new Set(playersData
-            .filter(p => p.pos === selectedPos && p.archetype === selectedArch)
+            .filter(p => p.pos === posSel.value && p.archetype === archSel.value)
             .map(p => p.height))];
         
         heights.forEach(h => {
             const opt = document.createElement('option');
             opt.value = h;
             opt.textContent = h;
-            heightSelect.appendChild(opt);
+            heightSel.appendChild(opt);
         });
-        heightSelect.disabled = false;
+        heightSel.disabled = false;
+        renderTable();
+    }
+
+    function getPlayer(slotId) {
+        const pos = document.getElementById(`pos-${slotId}`).value;
+        const arch = document.getElementById(`arch-${slotId}`).value;
+        const height = document.getElementById(`height-${slotId}`).value;
+
+        if (!pos || !arch || !height) return null;
+        return playersData.find(p => p.pos === pos && p.archetype === arch && p.height === height);
     }
 
     function getColorClass(val) {
-        if (val >= 85) return 'high';
-        if (val >= 70) return 'med';
-        return 'low';
+        if (val >= 85) return 'val-high';
+        if (val >= 70) return 'val-med';
+        return 'val-low';
     }
 
-    function displayStats() {
-        const selectedPos = posSelect.value;
-        const selectedArch = archSelect.value;
-        const selectedHeight = heightSelect.value;
+    function renderTable() {
+        const p1 = getPlayer(1);
+        const p2 = getPlayer(2);
+        const p3 = getPlayer(3);
 
-        if (!selectedPos || !selectedArch || !selectedHeight) return;
+        // Update Headers
+        document.getElementById('h-p1').textContent = p1 ? `${p1.pos} ${p1.archetype} ${p1.height}` : 'Joueur 1';
+        document.getElementById('h-p2').textContent = p2 ? `${p2.pos} ${p2.archetype} ${p2.height}` : 'Joueur 2';
+        document.getElementById('h-p3').textContent = p3 ? `${p3.pos} ${p3.archetype} ${p3.height}` : 'Joueur 3';
 
-        const player = playersData.find(p => p.pos === selectedPos && p.archetype === selectedArch && p.height === selectedHeight);
+        const tbody = document.getElementById('table-body');
+        let html = '';
 
-        if (!player) return;
-
-        let html = `<div id="stats-container">`;
-
-        for (const [category, attributes] of Object.entries(structure)) {
-            html += `
-                <div class="stat-category">
-                    <div class="category-title">${category}</div>
-            `;
-            
-            attributes.forEach(attr => {
-                const val = player.stats[attr];
-                const colorClass = getColorClass(val);
-                html += `
-                    <div class="stat-row">
-                        <span>${attr}</span>
-                        <span class="stat-val ${colorClass}">${val}</span>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
+        if (!p1 && !p2 && !p3) {
+            tbody.innerHTML = '<tr><td colspan="4" style="padding: 30px; color: #666; text-align: center;">Sélectionnez au moins un joueur pour comparer.</td></tr>';
+            return;
         }
 
-        html += `</div>`;
-        resultArea.innerHTML = html;
-        
-        // Trigger animation
-        setTimeout(() => {
-            document.getElementById('stats-container').classList.add('visible');
-        }, 10);
+        for (const [category, attributes] of Object.entries(structure)) {
+            // Category Header
+            html += `<tr class="category-row"><th colspan="4">${category}</th></tr>`;
+
+            attributes.forEach(attr => {
+                const v1 = p1 ? p1.stats[attr] : null;
+                const v2 = p2 ? p2.stats[attr] : null;
+                const v3 = p3 ? p3.stats[attr] : null;
+
+                // Determine max value for highlighting
+                const vals = [v1, v2, v3].filter(v => v !== null);
+                const max = vals.length > 0 ? Math.max(...vals) : -1;
+
+                html += `<tr>`;
+                html += `<td class="attr-name">${attr}</td>`;
+                
+                // Cell 1
+                html += `<td class="${v1 === max ? 'winner' : ''}">`;
+                html += v1 ? `<span class="${getColorClass(v1)}">${v1}</span>` : '<span class="val-empty">-</span>';
+                html += `</td>`;
+
+                // Cell 2
+                html += `<td class="${v2 === max ? 'winner' : ''}">`;
+                html += v2 ? `<span class="${getColorClass(v2)}">${v2}</span>` : '<span class="val-empty">-</span>';
+                html += `</td>`;
+
+                // Cell 3
+                html += `<td class="${v3 === max ? 'winner' : ''}">`;
+                html += v3 ? `<span class="${getColorClass(v3)}">${v3}</span>` : '<span class="val-empty">-</span>';
+                html += `</td>`;
+
+                html += `</tr>`;
+            });
+        }
+
+        tbody.innerHTML = html;
     }
 
-    // Event Listeners
-    posSelect.addEventListener('change', updateArchetypes);
-    archSelect.addEventListener('change', updateHeights);
-    heightSelect.addEventListener('change', displayStats);
-
-    // Initialize
-    populateFilters();
+    // Start
+    initSelectors();
 
 </script>
 
